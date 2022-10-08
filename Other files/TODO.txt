@@ -1,0 +1,40 @@
+﻿
+▀█▀ █▀█ █▀▄ █▀█ ▀
+ █  █▄█ █▄▀ █▄█ ▄
+	
+	Low Priority:
+		Make sprites
+		Sfx
+		Music
+
+	Medium Priority:
+		Make player
+		UI System
+
+	High Priority:
+		Tile texture management
+		Tile system
+	
+	Doing:
+		Make TODO file
+
+	Needs tweaking:
+		...nothing...
+
+▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ 
+
+▄▄
+█▄█ █ █ █▀▀ █▀ ▀
+█▄▀ █▄█ █▄█ ▄█ ▄
+	
+	Low Impact:
+		...nothing...
+	
+	Medium Impact:
+		...nothing...
+	
+	High Impact:
+		...nothing...
+
+	Fixing:
+		...nothing...
