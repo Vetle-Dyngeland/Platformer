@@ -1,6 +1,8 @@
 ﻿using Apos.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Platformer.Base;
+using System.Collections.Generic;
 
 namespace Platformer.Managers
 {
@@ -14,6 +16,8 @@ namespace Platformer.Managers
         private float exitTimer;
         private const float exitTime = .001f;
 
+        List<Tile> tiles;
+
         public GameManager(Game game)
         {
             this.game = game;
@@ -24,7 +28,15 @@ namespace Platformer.Managers
 
         public void LoadContent()
         {
-            
+            tiles = new();
+            for(int i = 0; i < 20; i++) {
+                tiles.Add(new("Grass" + i.ToString(), true) {
+                    position = Vector2.UnitX * i * 32
+                });
+            }
+
+            foreach(Sprite sprite in tiles)
+                drawManager.AddPermaSpriteAtLayer(sprite, 1);
         }
 
         public void Update(GameTime gameTime)
@@ -32,6 +44,11 @@ namespace Platformer.Managers
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             HandleExit(deltaTime);
+            List<CollisionSprite> colTiles = new();
+            foreach(CollisionSprite tile in tiles)
+                colTiles.Add(tile);
+            foreach(var tile in tiles)
+                tile.Update(gameTime, colTiles);
 
             cameraManager.Update(gameTime);
         }

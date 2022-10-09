@@ -9,7 +9,7 @@ namespace Platformer.Base
         public Texture2D texture;
 
         public Vector2 position;
-        public Vector2 size;
+        public Vector2 size = Vector2.One * 50;
 
         public Color color = Color.White;
 

@@ -6,7 +6,7 @@ namespace Platformer.System
 {
     public class Game1 : Game
     {
-        private GraphicsDeviceManager graphics;
+        private readonly GraphicsDeviceManager graphics;
         private GameManager gameManager;
 
         public Game1()
@@ -29,7 +29,6 @@ namespace Platformer.System
             InputHelper.Setup(this);
             ContentLoader.LoadContent(Content);
             gameManager.LoadContent();
-
         }
 
         protected override void Update(GameTime gameTime)

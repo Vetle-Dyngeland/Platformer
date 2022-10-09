@@ -27,5 +27,15 @@ namespace Platformer.Helpers
             Rectangle rect = new((center - size / 2).ToPoint(), size.ToPoint());
             spriteBatch.Draw(ContentLoader.textures[0][0], rect, color);
         }
+
+        public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 position, Vector2 size, Color color = default)
+            => DrawRectangle(spriteBatch, new(position.ToPoint(), size.ToPoint()), color);
+
+        public static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color = default)
+        {
+            if(color == default) color = Color.White;
+
+            spriteBatch.Draw(ContentLoader.textures[0][0], rect, color);
+        }
     }
 }

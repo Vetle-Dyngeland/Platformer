@@ -12,11 +12,11 @@
 		UI System
 
 	High Priority:
-		Tile texture management
-		Tile system
+		Tile system(Board.cs, LevelManager.cs)
 	
 	Doing:
-		Make TODO file
+		Create Tile.cs
+		Tile texture management
 
 	Needs tweaking:
 		...nothing...

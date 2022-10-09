@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using Platformer.Managers;
+using System.Threading;
+using System;
+using Apos.Input;
+using Microsoft.Xna.Framework.Input;
 
 namespace Platformer.Base
 {
@@ -11,12 +14,13 @@ namespace Platformer.Base
         public Rectangle hitbox;
 
         public float bounciness = .2f;
-
+        public float friction = .95f;
         public bool shouldCollide = true;
-
         public bool isStatic;
-
+        public bool useGravity = true;
         public readonly bool[] sidesTouching = new bool[4];
+        public readonly float[] sideFrictions = new float[2];
+        public const float gravity = 350;
 
         public CollisionSprite(Texture2D texture, Rectangle? sourceRect, Rectangle? hitbox) : base(texture, sourceRect)
         {
@@ -34,17 +38,31 @@ namespace Platformer.Base
 
         public virtual void Update(GameTime gameTime, List<CollisionSprite> colSprites)
         {
-            if(isStatic || !shouldCollide) return;
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if(useGravity && !isStatic)
+                velocity.Y += gravity * deltaTime;
 
-            for(int i = 0; i < sidesTouching.Length; i++)
-                sidesTouching[i] = false;
+            if(shouldCollide)
+                Collision(colSprites);
 
-            
-            foreach(var sprite in colSprites)
-                if(Touching(sprite) && sprite.shouldCollide) Collide(sprite.hitbox, sprite.bounciness);
+            position += velocity * deltaTime;
         }
 
         #region Collision
+
+        protected virtual void Collision(List<CollisionSprite> colSprites)
+        {
+            for(int i = 0; i < sidesTouching.Length; i++)
+                sidesTouching[i] = false;
+            for(int i = 0; i < sideFrictions.Length; i++)
+                sideFrictions[i] = 1f;
+
+            foreach(var sprite in colSprites)
+                if(Touching(sprite) && sprite.shouldCollide) Collide(sprite.hitbox, sprite.bounciness, sprite.friction);
+
+            velocity.Y *= sideFrictions[0];
+            velocity.X *= sideFrictions[1];
+        }
         public virtual bool Touching(Rectangle rect)
         {
             if(!shouldCollide) return false;
@@ -60,27 +78,33 @@ namespace Platformer.Base
 
         public virtual bool Touching(CollisionSprite colSprite) => Touching(colSprite.hitbox);
 
-        protected virtual void Collide(Rectangle rect, float bounciness = 0f)
+        protected virtual void Collide(Rectangle rect, float bounciness = 0f, float friction = 1f)
         {
-            if(IsTouchingTop(rect)) {
-                velocity.Y *= -bounciness;
-                position.Y = rect.Top - hitbox.Size.Y - 1;
-                sidesTouching[0] = true;
+            if(IsTouchingTop(rect)) sidesTouching[0] = true;
+            if(IsTouchingBottom(rect)) sidesTouching[1] = true;
+            if(IsTouchingLeft(rect)) sidesTouching[2] = true;
+            if(IsTouchingRight(rect)) sidesTouching[3] = true;
+
+            //X collision
+            if(sidesTouching[2] || sidesTouching[3]) {
+                if(!isStatic) {
+                    velocity.X *= -bounciness;
+                    if(sideFrictions[1] > friction) sideFrictions[1] = friction;
+                }
+
+                if(IsTouchingLeft(rect)) position.X = rect.Left - hitbox.Size.X - 1;
+                if(IsTouchingRight(rect)) position.X = rect.Right + 1;
             }
-            if(IsTouchingBottom(rect)) {
-                velocity.Y *= -bounciness;
-                position.Y = rect.Bottom + 1;
-                sidesTouching[1] = true;
-            }
-            if(IsTouchingLeft(rect)) {
-                velocity.X *= -bounciness;
-                position.X = rect.Left - hitbox.Size.Y - 1;
-                sidesTouching[2] = true;
-            }
-            if(IsTouchingRight(rect)) {
-                velocity.X *= -bounciness;
-                position.X = rect.Right + 1;
-                sidesTouching[3] = true;
+
+            //Y collision
+            if(sidesTouching[0] || sidesTouching[1]) {
+                if(!isStatic) {
+                    velocity.Y *= -bounciness;
+                    if(sideFrictions[0] > friction) sideFrictions[0] = friction;
+                }
+
+                if(IsTouchingTop(rect)) position.Y = rect.Top - hitbox.Size.Y - 1;
+                if(IsTouchingBottom(rect)) position.Y = rect.Bottom + 1;
             }
         }
 

@@ -20,9 +20,14 @@ namespace Platformer.Managers
             Content = content;
             InitializeDictionaries();
 
-            LoadFont("Arial", 24);
+            for(int i = 24; i < 35; i += 2) 
+                LoadFont("Arial", i);
+            LoadFont("Arial", 60);
+
             LoadTexture("Test", "whitePixel");
             LoadTexture("Test", "circle");
+
+            LoadTexture("Tiles", "tileset");
         }
 
         private static void InitializeDictionaries()
@@ -32,7 +37,8 @@ namespace Platformer.Managers
             };
 
             textureDict = new() {
-                { "Test", 0 }
+                { "Test", 0 },
+                { "Tiles", 1 }
             };
         }
 
